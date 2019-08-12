@@ -80,11 +80,13 @@ public class RestControllerDemo {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("iPlanetDirectoryPro", user.getTokenId());
+        httpHeaders.add("Cache-Control", "no-cache");
+        httpHeaders.add("Accept-API-Version", "resource=2.0, protocol=1.0");
         HttpEntity<MultiValueMap<String, String>> request =
                 new HttpEntity<>(new LinkedMultiValueMap<>(), httpHeaders);
         ResponseEntity<String> response =
                 restTemplate.postForEntity(
-                        "http://104.154.204.31/openam/json/sessions/?_action=logout", request, String.class);
+                        "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/sessions/?_action=logout", request, String.class);
         return "login";
     }
 }
