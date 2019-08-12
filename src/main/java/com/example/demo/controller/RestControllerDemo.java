@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class RestControllerDemo {
 
@@ -53,13 +55,13 @@ public class RestControllerDemo {
         httpHeaders.add("X-OpenAM-Password", user.getPassword());
         httpHeaders.add("Accept-API-Version", "resource=2.0, protocol=1.0");
 
-        HttpEntity<MultiValueMap<String, String>> request =
+        HttpEntity<MultiValueMap<String, String>> forgerockRequest =
                 new HttpEntity<>(new LinkedMultiValueMap<>(), httpHeaders);
 
         try{
             ResponseEntity<String> response =
                     restTemplate.postForEntity(
-                            "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/authenticate", request, String.class);
+                            "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/authenticate", forgerockRequest, String.class);
 
             //-------------- santier in lucru -------------------
             JSONObject jsonObject = new JSONObject(response.getBody());
@@ -76,7 +78,7 @@ public class RestControllerDemo {
     }
 
     @PostMapping("/logout")
-    public String logout(){
+    public String logout(Model model){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("iPlanetDirectoryPro", user.getTokenId());
@@ -87,10 +89,10 @@ public class RestControllerDemo {
         ResponseEntity<String> response =
                 restTemplate.postForEntity(
                         "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/sessions/?_action=logout", request, String.class);
+        model.addAttribute("user", new User());
         return "login";
     }
 }
-
 
 class User {
     private String username;
