@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,11 +10,18 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import org.json.*;
 
+import com.example.demo.dto.User;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class RestControllerDemo {
@@ -45,7 +50,7 @@ public class RestControllerDemo {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("user") User userForm) {
+    public String login(@ModelAttribute("user") User userForm, HttpServletResponse servletResponse) {
         user.setUsername(userForm.getUsername());
         user.setPassword(userForm.getPassword());
 
@@ -61,13 +66,13 @@ public class RestControllerDemo {
         try{
             ResponseEntity<String> response =
                     restTemplate.postForEntity(
-                            "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/authenticate", forgerockRequest, String.class);
-
+                            "http://104.154.204.31/openam/json/realms/gog-demo/authenticate", forgerockRequest, String.class);
             //-------------- santier in lucru -------------------
             JSONObject jsonObject = new JSONObject(response.getBody());
             System.out.println(jsonObject);
             if(response.getStatusCode().is2xxSuccessful()){
-                user.setTokenId(jsonObject.getString("tokenId"));
+                Cookie iplanetDirectoryPro = new Cookie("iplanetDirectoryPro", jsonObject.getString("tokenId"));
+                servletResponse.addCookie(iplanetDirectoryPro);
             }
             //---------------------------------------------------
         }catch(HttpClientErrorException ex){
@@ -78,44 +83,56 @@ public class RestControllerDemo {
     }
 
     @PostMapping("/logout")
-    public String logout(Model model){
+    public String logout(Model model, HttpServletRequest servletRequest, HttpServletResponse servletResponse){
+
+        Optional<String> cookie = Arrays.stream(servletRequest.getCookies())
+                .filter(c -> "iplanetDirectoryPro".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findAny();
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.add("iPlanetDirectoryPro", user.getTokenId());
+        httpHeaders.add("iplanetDirectoryPro", cookie.get());
         httpHeaders.add("Cache-Control", "no-cache");
         httpHeaders.add("Accept-API-Version", "resource=2.0, protocol=1.0");
         HttpEntity<MultiValueMap<String, String>> request =
                 new HttpEntity<>(new LinkedMultiValueMap<>(), httpHeaders);
         ResponseEntity<String> response =
                 restTemplate.postForEntity(
-                        "http://104.154.204.31/openam/json/realms/aaaaaaaaaaa/sessions/?_action=logout", request, String.class);
+                        "http://104.154.204.31/openam/json/realms/gog-demo/sessions/?_action=logout", request, String.class);
         model.addAttribute("user", new User());
+
+        // delete cookie
+        Cookie iplanetDirectoryPro = new Cookie("iplanetDirectoryPro", "");
+        iplanetDirectoryPro.setMaxAge(0);
+        servletResponse.addCookie(iplanetDirectoryPro);
         return "login";
     }
+
+    @GetMapping("/info")
+    public ResponseEntity<String> getSessionInfo(HttpServletRequest servletRequest){
+
+        Optional<String> cookie = Arrays.stream(servletRequest.getCookies())
+                .filter(c -> "iplanetDirectoryPro".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findAny();
+
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("iplanetDirectoryPro", cookie.get());
+        httpHeaders.add("Accept-API-Version", "resource=3.1, protocol=1.0");
+
+        HttpEntity<MultiValueMap<String, String>> request =
+                new HttpEntity<>(new LinkedMultiValueMap<>(), httpHeaders);
+        ResponseEntity<String> response =
+                restTemplate.postForEntity(
+                        "http://104.154.204.31/openam/json/realms/gog-demo/sessions/?_action=getSessionInfo", request, String.class);
+
+        JSONObject jsonObject = new JSONObject(response.getBody());
+        System.out.println(jsonObject);
+
+        return response;
+    }
 }
 
-class User {
-    private String username;
-    private String password;
-    private String tokenId;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getTokenId() { return tokenId; }
-
-    public void setTokenId(String tokenId) { this.tokenId = tokenId; }
-}
