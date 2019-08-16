@@ -74,7 +74,7 @@ h2.inactive {
 
 h2.active {
   color: #0d0d0d;
-  border-bottom: 2px solid #5fbae9;
+  border-bottom: 2px solid dimgrey;
 }
 
 
@@ -138,7 +138,7 @@ input[type=text], input[type=password] {
 
 input[type=text]:focus, input[type=password]:focus {
   background-color: #fff;
-  border-bottom: 2px solid #5fbae9;
+  border-bottom: 2px solid dimgrey;
 }
 
 input[type=text]:placeholder, input[type=password]:placeholder {
@@ -252,6 +252,27 @@ input[type=text]:placeholder, input[type=password]:placeholder {
 
 
 /* OTHERS */
+
+.element-boundaries{
+    margin: 5px 20px 10px 20px;
+    padding: 15px 32px;
+}
+
+.right-border{
+    margin-right: 15px;
+}
+
+.button-container{
+    position: absolute;
+    top: 37%;
+    left: 40%;
+}
+
+.text-container{
+    position: absolute;
+    top: 30%;
+    left: 42%;
+}
 
 *:focus {
     outline: none;

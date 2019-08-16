@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset = "ISO-8859-1" />
+    <link th:href = "@{css/style.css}" rel = "stylesheet"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Registration</title>
+</head>
+<body>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <input type="text" id="login" class="fadeIn first" name="login" placeholder="login" th:field="*{username}" required>
+                <input type="text" id="givenName" class="fadeIn second" name="givenName" placeholder="given name" th:field="*{givenName}" required>
+                <input type="text" id="mail" class="fadeIn third" name="mail" placeholder="email" th:field="*{mail}" required>
+                <input type="password" id="password" class="fadeIn fourth" name="login" placeholder="password" th:field="*{password}" required>
+                <button type="submit" class="btn btn-dark fadeIn fourth element-boundaries">Register</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

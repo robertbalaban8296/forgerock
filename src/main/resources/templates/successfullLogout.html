@@ -8,12 +8,11 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="button-container">
-        <center>
-            <h4>Failed to log in</h4><br/><br/><br/>
-            <a href="./login"><button type="button" class="right-border btn btn-light">Try again?</button></a>
-            <a href="./home"><button type="button" class="btn btn-dark">Home</button></a>
-        </center>
-    </div>
+    <form th:action="@{/logout}" th:object="${user}" method="post">
+        <div class="text-container">
+            <h4>Logged out successfully</h4><br/><br/><br/>
+            <center><a href="./home"><button type="button" class="btn btn-dark">Home</button></a></center>
+        </div>
+    </form>
 </body>
 </html>

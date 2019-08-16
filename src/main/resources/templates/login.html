@@ -2,11 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset = "ISO-8859-1" />
-        <link href = "css/style.css" rel = "stylesheet"/>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <link th:href = "@{css/style.css}" rel = "stylesheet"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="js/functions.js"></script>
         <title>Login</title>
     </head>
     <body>
@@ -14,9 +13,9 @@
             <div id="formContent">
                 <!-- Login Form -->
                 <form th:action="@{/login}" th:object="${user}" method="post">
-                    <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" th:field="*{username}">
-                    <input type="password" id="password" class="fadeIn third" name="login" placeholder="password" th:field="*{password}">
-                    <input type="submit" class="fadeIn fourth" value="Log In">
+                    <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" th:field="*{username}" required>
+                    <input type="password" id="password" class="fadeIn third" name="login" placeholder="password" th:field="*{password}" required>
+                    <button type="submit" class="btn btn-dark fadeIn fourth element-boundaries">Log in</button>
                 </form>
             </div>
         </div>
