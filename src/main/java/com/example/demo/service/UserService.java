@@ -120,7 +120,7 @@ public class UserService {
         servletResponse.addCookie(iplanetDirectoryPro);
         Cookie accessToken = new Cookie(Constants.ACCESS_TOKEN, "");
         iplanetDirectoryPro.setMaxAge(0);
-        servletResponse.addCookie(iplanetDirectoryPro);
+        servletResponse.addCookie(accessToken);
     }
 
     public SessionInfo getSessionInfo(HttpServletRequest servletRequest) {
