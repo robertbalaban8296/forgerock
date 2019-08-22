@@ -2,9 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.dto.User;
 import com.example.demo.responses.Authentication;
+import com.example.demo.responses.Introspect;
 import com.example.demo.responses.OAuthResponse;
 import com.example.demo.responses.SessionInfo;
 import com.example.demo.utils.Constants;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -80,7 +82,6 @@ public class UserService {
                 .post()
                 .uri(Constants.ACCESS_TOKEN_URL)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                //.cookie(Constants.IPLANET_DIRECTORY_PRO, auth.getTokenId())
                 .body(BodyInserters.fromFormData(accessTokenBody))
                 .accept(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN)
                 .retrieve()
@@ -91,17 +92,19 @@ public class UserService {
                 .bodyToMono(OAuthResponse.class)
                 .block();
 
-        Cookie iplanetDirectoryPro = new Cookie(Constants.IPLANET_DIRECTORY_PRO, oAuthResponse.getAccessToken());
+        Cookie iplanetDirectoryPro = new Cookie(Constants.IPLANET_DIRECTORY_PRO, auth.getTokenId());
+        Cookie accessToken = new Cookie(Constants.ACCESS_TOKEN, oAuthResponse.getAccessToken());
         servletResponse.addCookie(iplanetDirectoryPro);
+        servletResponse.addCookie(accessToken);
     }
 
     public void sendLogoutRequest(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
-        Optional<String> cookie = getTokenCookie(servletRequest);
+        Optional<String> cookie = getTokenCookie(servletRequest, Constants.IPLANET_DIRECTORY_PRO);
         webClientBuilder.build()
                 .post()
                 .uri(Constants.LOGOUT_URL)
                 .header(Constants.IPLANET_DIRECTORY_PRO, cookie.get())
-                .header(Constants.CACHE_CONTROL, Constants.CACHE_CONTROL_VALUE)
+                .header(HttpHeaders.CACHE_CONTROL, Constants.CACHE_CONTROL_VALUE)
                 .header(Constants.ACCEPT_API_VERSION, Constants.ACCEPT_API_VERSION_VALUE)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientResponse ->
@@ -111,14 +114,17 @@ public class UserService {
                 .bodyToMono(SessionInfo.class)
                 .block();
 
-        // delete cookie
-        Cookie iplanetDirectoryPro = new Cookie(Constants.IPLANET_DIRECTORY_PRO, "");
+        // delete cookies
+        Cookie iplanetDirectoryPro = new Cookie(Constants.ACCESS_TOKEN, "");
+        iplanetDirectoryPro.setMaxAge(0);
+        servletResponse.addCookie(iplanetDirectoryPro);
+        Cookie accessToken = new Cookie(Constants.ACCESS_TOKEN, "");
         iplanetDirectoryPro.setMaxAge(0);
         servletResponse.addCookie(iplanetDirectoryPro);
     }
 
     public SessionInfo getSessionInfo(HttpServletRequest servletRequest) {
-        Optional<String> cookie = getTokenCookie(servletRequest);
+        Optional<String> cookie = getTokenCookie(servletRequest, Constants.IPLANET_DIRECTORY_PRO);
 
         return cookie.isPresent() ? webClientBuilder.build()
                 .post()
@@ -134,9 +140,27 @@ public class UserService {
                 .block() : new SessionInfo();
     }
 
-    private Optional<String> getTokenCookie(HttpServletRequest request) {
+    public Introspect getIntrospect(HttpServletRequest servletRequest) {
+        Optional<String> cookie = getTokenCookie(servletRequest, Constants.ACCESS_TOKEN);
+
+        return cookie.isPresent() ? webClientBuilder.build()
+                .post()
+                .uri(Constants.INTROSPECT_URL)
+                .header(Constants.ACCEPT_API_VERSION, Constants.ACCEPT_API_VERSION_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, Constants.AUTHORIZATION_VALUE)
+                .body(BodyInserters.fromFormData("token", cookie.get()))
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientResponse ->
+                        Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
+                .onStatus(HttpStatus::is5xxServerError, clientResponse ->
+                        Mono.error(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)))
+                .bodyToMono(Introspect.class)
+                .block() : new Introspect();
+    }
+
+    private Optional<String> getTokenCookie(HttpServletRequest request, String cookieName) {
         return request.getCookies() != null ? Arrays.stream(request.getCookies())
-                .filter(c -> Constants.IPLANET_DIRECTORY_PRO.equals(c.getName()))
+                .filter(c -> cookieName.equals(c.getName()))
                 .map(Cookie::getValue)
                 .findAny() : Optional.empty();
     }

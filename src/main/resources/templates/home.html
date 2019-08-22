@@ -10,19 +10,20 @@
     </head>
 
     <body>
-        <div class="mainContainer" th:object="${sessionInfo}">
-            <div th:unless="*{name == null}" class="text-container">
+        <div class="mainContainer" th:object="${introspect}">
+            <div th:if="*{active == true}" class="text-container">
                 <center>
-                    <h4>Hi <span th:text="*{name}" style="color: darkred;"></span></h4><br/><br/><br/>
+                    <h4>Hi <span th:text="*{sub}" style="color: darkred;"></span></h4><br/><br/><br/>
                     <form th:action="@{/logout}" method="post">
                         <a href="./logout"><button type="submit" class="btn btn-dark">Logout</button></a>
                     </form>
                 </center>
             </div>
-            <div th:if="*{name == null}" class="button-container">
+            <div th:if="*{active == false}" class="button-container">
                 <a href="./register"><button type="button" class="right-border btn btn-dark">Register</button></a>
-                <a href="./login"><button type="button" class="right-border btn btn-light">LDAP Login</button></a>
-                <a href="./login"><button type="button" class="right-border btn btn-light">OAuth2 Login</button></a>
+                <a href="./login"><button type="button" class="right-border btn btn-light">Login</button></a>
+                <a href="./resource1"><button type="button" class="right-border btn btn-light">Resource1</button></a>
+                <a href="./resource2"><button type="button" class="right-border btn btn-light">Resource2</button></a>
             </div>
         </div>
     </body>

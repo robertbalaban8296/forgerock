@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+import com.example.demo.responses.Introspect;
 import com.example.demo.responses.SessionInfo;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class UserController {
 
     @GetMapping("/home")
     public String displayHome(HttpServletRequest servletRequest, Model model){
-        SessionInfo sessionInfo = userService.getSessionInfo(servletRequest);
-        model.addAttribute("sessionInfo", sessionInfo);
+        Introspect introspect = userService.getIntrospect(servletRequest);
+        model.addAttribute("introspect", introspect);
         return "home";
     }
 
@@ -48,6 +49,17 @@ public class UserController {
     @GetMapping("/register")
     public String displayRegistrationForm(@ModelAttribute("user") User user){
         return "register";
+    }
+
+    @GetMapping("/introspect")
+    public String testIntrospect(HttpServletRequest request, HttpServletResponse response){
+        Introspect introspect = userService.getIntrospect(request);
+        if(introspect.isActive()){
+            return "resource2";
+        }else{
+            return "resource1";
+        }
+
     }
 
     @PostMapping("/register")
