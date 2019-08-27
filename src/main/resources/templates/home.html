@@ -15,15 +15,15 @@
                 <center>
                     <h4>Hi <span th:text="*{sub}" style="color: darkred;"></span></h4><br/><br/><br/>
                     <form th:action="@{/logout}" method="post">
+                        <a href="./penguin"><button type="button" class="right-border btn btn-light">Penguin</button></a>
                         <a href="./logout"><button type="submit" class="btn btn-dark">Logout</button></a>
                     </form>
                 </center>
             </div>
             <div th:if="*{active == false}" class="button-container">
+                <a href="./penguin"><button type="button" class="right-border btn btn-light">Penguin</button></a>
                 <a href="./register"><button type="button" class="right-border btn btn-dark">Register</button></a>
                 <a href="./login"><button type="button" class="right-border btn btn-light">Login</button></a>
-                <a href="./resource1"><button type="button" class="right-border btn btn-light">Resource1</button></a>
-                <a href="./resource2"><button type="button" class="right-border btn btn-light">Resource2</button></a>
             </div>
         </div>
     </body>

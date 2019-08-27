@@ -274,6 +274,14 @@ input[type=text]:placeholder, input[type=password]:placeholder {
     left: 42%;
 }
 
+.img-container{
+    position: absolute;
+    width: 400px;
+    height: 600px;
+    top: 5%;
+    left: 35%;
+}
+
 *:focus {
     outline: none;
 }

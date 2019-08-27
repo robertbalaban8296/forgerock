@@ -6,7 +6,6 @@ import com.example.demo.responses.Introspect;
 import com.example.demo.responses.OAuthResponse;
 import com.example.demo.responses.SessionInfo;
 import com.example.demo.utils.Constants;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,7 @@ public class UserService {
         MultiValueMap<String,String> map = new LinkedMultiValueMap();
         map.add("client_id", "myClient");
         map.add("response_type", "code");
-        map.add("scope", "myScope");
+        map.add("scope", "myScope penguin");
         map.add("client_secret", "12345678");
         map.add("csrf", auth.getTokenId());
         map.add("redirect_uri", "http://localhost:3333/home");
@@ -115,11 +114,11 @@ public class UserService {
                 .block();
 
         // delete cookies
-        Cookie iplanetDirectoryPro = new Cookie(Constants.ACCESS_TOKEN, "");
+        Cookie iplanetDirectoryPro = new Cookie(Constants.IPLANET_DIRECTORY_PRO, "");
         iplanetDirectoryPro.setMaxAge(0);
         servletResponse.addCookie(iplanetDirectoryPro);
         Cookie accessToken = new Cookie(Constants.ACCESS_TOKEN, "");
-        iplanetDirectoryPro.setMaxAge(0);
+        accessToken.setMaxAge(0);
         servletResponse.addCookie(accessToken);
     }
 

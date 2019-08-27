@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Info</title>
+
+        <link th:href = "@{css/style.css}" rel = "stylesheet"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div th:object="${introspect}" class="text-container">
+            <div th:if="*{sub} == null">
+                <center><h6>the penguin needs to know who you are...</h6></center>
+                <center><h4 >please <a style="color: darkred;" href="./login">login</a></h4></center>
+            </div>
+
+            <div th:unless="*{sub} == null">
+                <h4>the penguin hides from <span th:text="*{sub}" style="color: darkred;"></span></h4>
+            </div>
+            <br/><br/><br/>
+            <center><a href="./home"><button type="button" class="btn btn-dark">Home</button></a></center>
+        </div>
+    </body>
+    </html>

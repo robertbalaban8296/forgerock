@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 import com.example.demo.responses.Introspect;
-import com.example.demo.responses.SessionInfo;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,17 +46,18 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String displayRegistrationForm(@ModelAttribute("user") User user){
-        return "register";
-    }
+    public String displayRegistrationForm(@ModelAttribute("user") User user){ return "register"; }
 
-    @GetMapping("/introspect")
-    public String testIntrospect(HttpServletRequest request, HttpServletResponse response){
+    @GetMapping("/penguin")
+    public String testIntrospect(HttpServletRequest request, HttpServletResponse response, Model model){
         Introspect introspect = userService.getIntrospect(request);
-        if(introspect.isActive()){
-            return "resource2";
+        model.addAttribute("introspect", introspect);
+
+        // o fi oare ok ?
+        if(introspect.isActive() && introspect.getScope().contains("penguin")){
+            return "penguin";
         }else{
-            return "resource1";
+            return "info";
         }
 
     }
