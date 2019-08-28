@@ -13,7 +13,7 @@
             <div id="formContent">
                 <!-- Login Form -->
                 <form th:action="@{/login}" th:object="${user}" method="post">
-                    <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" th:field="*{username}" required>
+                    <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" th:field="*{userName}" required>
                     <input type="password" id="password" class="fadeIn third" name="login" placeholder="password" th:field="*{password}" required>
                     <button type="submit" class="btn btn-dark fadeIn fourth element-boundaries">Log in</button>
                 </form>

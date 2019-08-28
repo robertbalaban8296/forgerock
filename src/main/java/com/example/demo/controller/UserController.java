@@ -46,7 +46,17 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String displayRegistrationForm(@ModelAttribute("user") User user){ return "register"; }
+    public String displayRegistrationForm(@ModelAttribute("user") User user, HttpServletResponse servletResponse){
+        userService.getRegistrationToken(servletResponse);
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute("user") User user, Model model, HttpServletRequest servletRequest, HttpServletResponse servletResponse){
+        userService.sendRegistrationRequest(user, servletRequest, servletResponse);
+        model.addAttribute("introspect", userService.getIntrospect(servletRequest));
+        return "home";
+    }
 
     @GetMapping("/penguin")
     public String testIntrospect(HttpServletRequest request, HttpServletResponse response, Model model){
@@ -60,11 +70,6 @@ public class UserController {
             return "info";
         }
 
-    }
-
-    @PostMapping("/register")
-    public String registerUser(){
-        return "login";
     }
 }
 

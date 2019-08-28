@@ -12,8 +12,9 @@
     <div class="wrapper fadeInDown">
         <div id="formContent">
             <form th:action="@{/register}" th:object="${user}" method="post">
-                <input type="text" id="login" class="fadeIn first" name="login" placeholder="login" th:field="*{username}" required>
+                <input type="text" id="login" class="fadeIn first" name="login" placeholder="login" th:field="*{userName}" required>
                 <input type="text" id="givenName" class="fadeIn second" name="givenName" placeholder="given name" th:field="*{givenName}" required>
+                <input type="text" id="sn" class="fadeIn second" name="sn" placeholder="last name" th:field="*{sn}" required>
                 <input type="text" id="mail" class="fadeIn third" name="mail" placeholder="email" th:field="*{mail}" required>
                 <input type="password" id="password" class="fadeIn fourth" name="login" placeholder="password" th:field="*{password}" required>
                 <button type="submit" class="btn btn-dark fadeIn fourth element-boundaries">Register</button>

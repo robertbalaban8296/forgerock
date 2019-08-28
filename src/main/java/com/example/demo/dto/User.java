@@ -1,10 +1,11 @@
 package com.example.demo.dto;
 
 public class User {
-    private String username;
+    private String userName;
     private String password;
     private String givenName;
     private String mail;
+    private String sn;
 
     public String getPassword() {
         return password;
@@ -14,12 +15,12 @@ public class User {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String username) {
+        this.userName = username;
     }
 
     public String getGivenName() {
@@ -36,5 +37,13 @@ public class User {
 
     public void setMail(String email) {
         this.mail = email;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 }
